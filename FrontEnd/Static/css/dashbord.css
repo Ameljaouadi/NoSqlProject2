@@ -1,0 +1,112 @@
+/* Disposition générale */
+.list-card h2 {
+    margin-bottom: 6%;
+    color: #33393f; /* Couleur plus foncée et moderne */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+}
+.list-card {
+    margin-top: 5%;
+    text-align: center;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 cartes par ligne */
+    gap: 20px; /* Espacement entre les cartes */
+    justify-items: center;
+}
+
+/* Styles des cartes */
+.card {
+    width: 100%;
+    max-width: 250px;
+    border-radius: 15px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); /* Ombre plus douce et large */
+    text-align: left;
+    overflow: hidden;
+    background-color: #ffffff; /* Fond blanc pour contraster avec les couleurs de fond */
+    transition: all 0.3s ease-in-out;
+    padding: 15px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+
+/* Couleurs des cartes */
+.card-abonnes {
+    background: linear-gradient(135deg, #5ab8a5, #103636); /* Dégradé moderne */
+    color: #fff;
+}
+
+.card-documents {
+    background: linear-gradient(135deg, #5a93be, #25435a);
+    color: #fff;
+}
+
+.card-emprunts {
+    background: linear-gradient(135deg, #f3a7a7, #35160f);
+    color: #fff;
+}
+
+.card-populaire {
+    background: linear-gradient(135deg, #b883ac, #2e222b);
+    color: #fff;
+}
+
+
+/* Titre et contenu des cartes */
+.card-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: inherit;
+}
+
+.card-text {
+    font-size: 1rem;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+/* Bouton "Consulter" */
+.btn-icon {
+    margin-top: 15px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s, color 0.3s;
+}
+
+.btn-icon:hover {
+    color: #ffe;
+    transform: translateX(5px);
+}
+.dashbord-menu {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+.container-fluid {
+    padding: 0 20px;
+}
+/* Responsiveness */
+@media (max-width: 768px) {
+    .card-container {
+        grid-template-columns: 1fr; /* Une seule carte par ligne sur petits écrans */
+    }
+}
