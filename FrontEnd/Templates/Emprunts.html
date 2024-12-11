@@ -93,15 +93,15 @@
                         {{ emp.statut }}
                       </span>
                     </td>
-                                        <td>
+                    <td>
                       <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ emp.code_emprunt }}">
                         <i class="fas fa-edit"></i>
                       </button>
                      <form action="/delete_emprunt/{{ emp.code_emprunt }}" method="POST" style="display:inline;">
-    <button class="btn btn-danger btn-sm" type="submit">
-        <i class="fas fa-trash"></i>
-    </button>
-</form>
+                      <button class="btn btn-danger btn-sm" type="submit">
+                          <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
 
                                         
                    

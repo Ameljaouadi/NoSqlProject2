@@ -1,18 +1,26 @@
 /* Disposition générale */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-y: auto; /* Active le défilement vertical */
+    background-color: #f8f9fa; /* Couleur de fond douce */
+    min-height: 100vh;
+}
 .list-card h2 {
-    margin-bottom: 6%;
+   
     color: #33393f; /* Couleur plus foncée et moderne */
     font-family: 'Roboto', sans-serif;
     font-weight: 700;
 }
 .list-card {
-    margin-top: 5%;
+    margin-top: 1%;
     text-align: center;
+    min-height: 80vh;
 }
 
 .card-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 cartes par ligne */
+    grid-template-columns: repeat(4, 1fr); /* 4 cartes par ligne */
     gap: 20px; /* Espacement entre les cartes */
     justify-items: center;
 }
@@ -22,10 +30,8 @@
     width: 100%;
     max-width: 250px;
     border-radius: 15px;
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1); /* Ombre plus douce et large */
-    text-align: left;
-    overflow: hidden;
-    background-color: #ffffff; /* Fond blanc pour contraster avec les couleurs de fond */
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
     transition: all 0.3s ease-in-out;
     padding: 15px;
 }
@@ -36,7 +42,7 @@
 }
 
 .card-body {
-    padding: 20px;
+    padding: 15px;
 }
 
 
@@ -65,12 +71,12 @@
 /* Titre et contenu des cartes */
 .card-title {
     font-size: 1.2rem;
+    font-weight: bold;
+    color: inherit;
     margin-bottom: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: bold;
-    color: inherit;
 }
 
 .card-text {
@@ -102,11 +108,63 @@
     gap: 20px;
 }
 .container-fluid {
-    padding: 0 20px;
+    padding:  20px;
+    overflow-y: auto; 
 }
 /* Responsiveness */
 @media (max-width: 768px) {
     .card-container {
         grid-template-columns: 1fr; /* Une seule carte par ligne sur petits écrans */
+    }
+}
+.stats {
+    display: flex;
+    gap: 20px;
+}
+.stat-box {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    
+}
+.chart {
+     
+        margin: 20px auto;
+        width:750px;
+        max-width: 900px;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+    
+}   
+/* Espacement entre plusieurs graphiques */
+.chart + .chart {
+    margin-top: 30px;
+}
+/* Affichage de l'image de l'histogramme */
+.chart img {
+    width: 580px;
+    height: auto;
+    border-radius: 10px;
+    max-height: 500px;
+    object-fit: cover;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .card-container {
+        grid-template-columns: 1fr; /* Une seule carte par ligne */
+    }
+
+    .chart {
+        width: 100%; /* Prend toute la largeur de l'écran */
+        padding: 15px; /* Réduire l'espace de padding */
+    }
+
+    .chart img {
+        max-height: 300px; /* Limiter la hauteur des graphiques pour les petits écrans */
     }
 }

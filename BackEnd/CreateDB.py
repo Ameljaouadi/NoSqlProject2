@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-
+import bcrypt
 # MongoDB connection
 client = MongoClient("mongodb://localhost:27017/")
 
@@ -24,4 +24,15 @@ db = client[db_name]
 #     "liste_emprunt_cours": "test", 
 #     "historique_emprunt": "test"
 # })
+# Create the 'users' collection with a sample admin user
+password = "admin123"
+hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+# Insérer l'utilisateur dans la base de données
+db.users.insert_one({
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": hashed_password,
+    "date_created": "19/11/2024"
+})
 print(f"Database '{db_name}' created successfully with a sample document.")

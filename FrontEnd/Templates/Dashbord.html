@@ -13,6 +13,7 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
   />
+  
 </head>
 <body class="bg-light">
     <div class="dashbord-menu">
@@ -21,9 +22,10 @@
         </div>
         <div class="container-fluid list-card">
             <h2 class="text-center">Médiathèque Dashboard</h2>
+            
+            
             <div class="card-container">
-                <!-- Total Abonnés -->
-                <div class="card card-abonnes">
+                 <div class="card card-abonnes">
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fas fa-users"></i> Abonnés
@@ -36,7 +38,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
-                </div>
+                </div> 
         
                 <!-- Total Documents -->
                 <div class="card card-documents">
@@ -52,10 +54,10 @@
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
-                </div>
+                </div> 
         
                 <!-- Total Emprunts -->
-                <div class="card card-emprunts">
+                 <div class="card card-emprunts">
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fas fa-exchange-alt"></i> Emprunts
@@ -68,7 +70,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
-                </div>
+                </div> 
         
                 <!-- Document le plus emprunté -->
                 <div class="card card-populaire">
@@ -81,7 +83,28 @@
                         </p>
                     </div>
                 </div>
+               
+                
+            
+               
+                
+
             </div>
+            <div class=" chart">
+                {% if plot_url %}
+                    <img src="data:image/png;base64,{{ plot_url }}" alt="Histogramme des emprunts">
+                {% else %}
+                    <p>Aucune donnée disponible pour générer un histogramme.</p>
+                {% endif %}
+            </div>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ plot_url_abonnes }}" alt="Histogramme des abonnés par mois">
+            </div>
+            
+            <div class="chart">
+                <img src="data:image/png;base64,{{ plot_url_emprunts }}" alt="Histogramme des emprunts par mois">
+            </div>
+          
         </div>
         
         
@@ -93,6 +116,10 @@
   
  <!-- SweetAlert2 for alerts -->
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
- 
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
 </body>
 </html>

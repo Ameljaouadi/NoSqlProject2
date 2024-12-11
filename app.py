@@ -2,7 +2,14 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from pymongo import MongoClient
 from bson import ObjectId
 from datetime import datetime, timedelta
+import random
+from flask import jsonify
+from flask import Response
+import matplotlib.pyplot as plt
+import io
+import bcrypt
 
+import base64
 app = Flask(__name__,static_folder='FrontEnd/Static',template_folder='FrontEnd/Templates')
 
 client = MongoClient("mongodb://localhost:27017/")
@@ -10,6 +17,7 @@ db = client["mediaDB"]
 # Définir une nouvelle collection pour les documents
 documents = db.documents
 emprunts = db.emprunts
+user=db.users
 
 
 @app.route('/SideBar')
@@ -434,14 +442,147 @@ def Dashbord():
     ])
     most_borrowed = list(most_borrowed)
     most_borrowed_title = most_borrowed[0]["_id"] if most_borrowed else "Aucun emprunt"
+   
+    # Générer l'histogramme des emprunts par document
+    emprunts = db.emprunts.find()
+    documents_counts = {}
+    for emprunt in emprunts:
+        titre = emprunt['document']['titre']
+        documents_counts[titre] = documents_counts.get(titre, 0) + 1
+
+    # Données pour l'histogramme des emprunts
+    titres = list(documents_counts.keys())
+    valeurs = list(documents_counts.values())
+
+    # Créer l'histogramme des emprunts par document
+    plt.figure(figsize=(10, 6))
+    plt.bar(titres, valeurs, color='skyblue')
+    plt.xlabel('Documents')
+    plt.ylabel('Nombre d\'emprunts')
+    plt.title('Histogramme des emprunts par document')
+    plt.xticks(rotation=45, ha='right')
+    
+    # Convertir le graphique des emprunts en image pour le HTML
+    img = io.BytesIO()
+    plt.savefig(img, format='png', bbox_inches='tight')
+    img.seek(0)
+    plot_url = base64.b64encode(img.getvalue()).decode()
+    plt.close()
+
+    # Générer l'histogramme des abonnés par mois
+    abonnements = db.abonne.find()
+    abonnements_counts = {}
+    for abonne in abonnements:
+        # Convertir la date d'inscription en datetime
+        date_str = abonne['date_inscription']  # Supposons que c'est une chaîne
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')  # Convertir en datetime
+        mois = date_obj.strftime('%Y-%m')  # Format mois/année
+        abonnements_counts[mois] = abonnements_counts.get(mois, 0) + 1
+
+    # Données pour l'histogramme des abonnés
+    mois_abonnements = list(abonnements_counts.keys())
+    count_abonnements = list(abonnements_counts.values())
+
+    # Créer l'histogramme des abonnés
+    plt.figure(figsize=(10, 6))
+    plt.bar(mois_abonnements, count_abonnements, color='lightgreen')
+    plt.xlabel('Mois')
+    plt.ylabel('Nombre d\'abonnés')
+    plt.title('Histogramme des abonnés par mois')
+    plt.xticks(rotation=45, ha='right')
+    
+    # Convertir le graphique des abonnés en image pour le HTML
+    img = io.BytesIO()
+    plt.savefig(img, format='png', bbox_inches='tight')
+    img.seek(0)
+    plot_url_abonnes = base64.b64encode(img.getvalue()).decode()
+    plt.close()
+
+    # Générer l'histogramme des emprunts par mois
+    emprunts_par_mois = {}
+    for emprunt in db.emprunts.find():
+        # Convertir la date d'emprunt en datetime
+        date_str = emprunt['date_emprunt']  # Supposons que c'est une chaîne
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')  # Convertir en datetime
+        mois = date_obj.strftime('%Y-%m')  # Format mois/année
+        emprunts_par_mois[mois] = emprunts_par_mois.get(mois, 0) + 1
+
+    # Données pour l'histogramme des emprunts par mois
+    mois_emprunts = list(emprunts_par_mois.keys())
+    count_emprunts = list(emprunts_par_mois.values())
+
+    # Créer l'histogramme des emprunts par mois
+    plt.figure(figsize=(10, 6))
+    plt.bar(mois_emprunts, count_emprunts, color='orange')
+    plt.xlabel('Mois')
+    plt.ylabel('Nombre d\'emprunts')
+    plt.title('Histogramme des emprunts par mois')
+    plt.xticks(rotation=45, ha='right')
+
+    # Convertir le graphique des emprunts par mois en image pour le HTML
+    img = io.BytesIO()
+    plt.savefig(img, format='png', bbox_inches='tight')
+    img.seek(0)
+    plot_url_emprunts = base64.b64encode(img.getvalue()).decode()
+    plt.close()
+
     # Passer les données au template
     return render_template(
         'Dashbord.html', 
         total_abonnes=total_abonnes,
         total_documents=total_documents,
         total_emprunts=total_emprunts,
-        most_borrowed_title=most_borrowed_title
+        most_borrowed_title=most_borrowed_title,
+        plot_url=plot_url,
+        plot_url_abonnes=plot_url_abonnes,
+        plot_url_emprunts=plot_url_emprunts
     )
  
+@app.route('/histogrammes', methods=['GET'])
+def histogrammes():
+    # Exemple : Générer un histogramme pour le nombre d'emprunts par abonné
+    emprunts = list(db.emprunts.find({}))
+    abonnes = [emprunt['abonne']['nom'] for emprunt in emprunts]
+    
+    # Compter les emprunts par abonné
+    abonne_counts = {abonne: abonnes.count(abonne) for abonne in set(abonnes)}
+
+    # Créer un histogramme
+    plt.figure(figsize=(10, 6))
+    plt.bar(abonne_counts.keys(), abonne_counts.values(), color='skyblue')
+    plt.xlabel('Abonnés')
+    plt.ylabel('Nombre d\'emprunts')
+    plt.title('Histogramme des emprunts par abonné')
+    plt.xticks(rotation=45, ha='right')
+
+    # Sauvegarder l'image dans un buffer pour la renvoyer via HTTP
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close()
+
+    # Encoder l'image en base64 pour l'intégrer dans une page HTML ou la renvoyer directement
+    return Response(buf.getvalue(), mimetype='image/png')
+  
+#login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Récupérer les données du formulaire
+        username = request.form['username']
+        password = request.form['password']
+         # Trouver l'utilisateur dans la base de données
+        userr = user.find_one({"username": username})
+
+        if userr:
+            # Vérifier le mot de passe (assurez-vous que le mot de passe est stocké haché)
+            if bcrypt.checkpw(password.encode('utf-8'), user['password']):
+                return redirect(url_for('dashboard'))
+            else:
+                return "Invalid credentials, please try again"
+        else:
+            return "User not found, please try again"
+    return render_template('login.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
